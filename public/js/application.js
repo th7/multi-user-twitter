@@ -1,7 +1,36 @@
-$(document).ready(function() {
-  // This is called after the document has loaded in its entirety
-  // This guarantees that any elements we bind to will exist on the page
-  // when we try to bind to them
+var drawToast = function(message) {
+  var toastHTML = '<div id="toast">' + message + '</div>'
 
-  // See: http://docs.jquery.com/Tutorials:Introducing_$(document).ready()
+  $('body').prepend(toastHTML);
+
+  setTimeout(hideToast, 2000);
+}
+
+var hideToast = function() {
+  $toast = $('#toast');
+  $('#toast').css('opacity', '0');
+  setTimeout(removeToast, 1000);
+
+}
+
+var removeToast = function() {
+  $('#toast').remove();
+}
+
+
+var onResult = function(data) {
+  drawToast(data);
+  $('#submit').removeAttr('disabled');
+  $('#wait').toggle();
+};
+
+var onSubmit = function(event) {
+  event.preventDefault();
+  $.post(this.action, $(this).serialize(), onResult);
+  $('#submit').attr('disabled', 'disabled');
+  $('#wait').toggle();
+};
+
+$(document).ready(function() {
+  $('form').on('submit', onSubmit);
 });
